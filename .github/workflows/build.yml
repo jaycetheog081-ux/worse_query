@@ -29,8 +29,9 @@ jobs:
           for APP in /Applications/Xcode*.app; do
             [ -d "$APP/Contents/Developer" ] || continue
 
-            VERSION=$("$APP/Contents/Developer/usr/bin/xcodebuild" -version | head -n 1)
-            echo "$APP: $VERSION"
+            VERSION=$("$APP/Contents/Developer/usr/bin/xcodebuild" -version)
+            echo "$APP"
+            echo "$VERSION"
 
             if [[ "$VERSION" == "Xcode 27"* ]]; then
               SELECTED="$APP/Contents/Developer"
@@ -39,11 +40,12 @@ jobs:
           done
 
           if [ -z "$SELECTED" ]; then
-            echo "ERROR: Xcode 27 is not installed on this runner."
+            echo "ERROR: Xcode 27 is not installed."
             exit 1
           fi
 
           sudo xcode-select -s "$SELECTED"
+
           xcodebuild -version
 
       - name: Inspect project
